@@ -65,13 +65,13 @@ Try filling in the `sorry`s below using `intro` and `simp`.
 def RingHom.comp (g : S →+* T) (f : R →+* S) : R →+* T where
   toFun x := g (f x)
   map_one' := by
-    sorry
+    simp
   map_mul' := by
-    sorry
+    simp
   map_zero' := by
-    sorry
+    simp
   map_add' := by
-    sorry
+    simp
 
 /-
 A ring isomorphism between `R` and `S` is written `e : R ≃+* S`.
@@ -91,13 +91,19 @@ def RingEquiv.comp (g : S ≃+* T) (f : R ≃+* S) : R ≃+* T where
   toFun x := g (f x)
   invFun x := f.symm (g.symm x)
   left_inv := by
-    sorry
+    intro x
+    simp
+    -- now we have to prove `g (f (f.symm (g.symm x))) = x`
+    -- but this is true by the definition of `g` and `f`.
   right_inv := by
-    sorry
+    intro x
+    simp
   map_add' := by
-    sorry
+    intro x y
+    simp
   map_mul' := by
-    sorry
+    intro x y
+    simp
 
 end homomorphisms
 
@@ -135,11 +141,19 @@ it is only an exericse).
 def Ideal.inter (I J : Ideal R) : Ideal R where
   carrier := I ∩ J
   add_mem' := by
-    sorry
+    intro x y hx hy
+    cases hx with
+    | intro hxI hxJ =>
+      cases hy with
+      | intro hyI hyJ =>
+        exact ⟨I.add_mem hxI hyI, J.add_mem hxJ hyJ⟩
   zero_mem' := by
-    sorry
+    simp
   smul_mem' := by
-    sorry
+    intro r x hx
+    cases hx with
+    | intro hxI hxJ =>
+      exact ⟨I.smul_mem r hxI, J.smul_mem r hxJ⟩
 
 /-
 Finally, let's look at ideal quotients. If `I` is an ideal of the ring `R`,
@@ -380,4 +394,3 @@ noncomputable def chineseIso [Fintype ι] (I : ι → Ideal R) (hI : ∀ i j, i 
 
 end Ideal
 end chinese
-
